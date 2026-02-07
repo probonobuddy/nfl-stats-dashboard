@@ -15,9 +15,6 @@ st.set_page_config(layout="wide")
 QB_DATA_URL = r"C:\NFL Data\nflscrapr_games.csv"
 
 # --- 1. DATA LOADING FUNCTIONS ---
-# --- 1. DATA LOADING FUNCTIONS ---
-
-# UPDATED: Direct URL to nflverse games file
 QB_DATA_URL = 'https://github.com/nflverse/nfldata/raw/master/data/games.csv'
 
 @st.cache_data
@@ -561,7 +558,17 @@ teams = sorted(pd.concat([qb_df['home_team'], qb_df['away_team']]).unique())
 
 default_season_index = len(seasons) - 1 if seasons else 0
 selected_season = st.selectbox('Select Season', seasons, index=default_season_index)
-selected_team = st.selectbox('Select Team (posteam)', teams)
+# --- SYNC CALLBACK ---
+def sync_schedule_team():
+    # Set the schedule dropdown's key to match the main team's new value
+    st.session_state.schedule_team_selector = st.session_state.main_team_selector
+
+selected_team = st.selectbox(
+    'Select Team (posteam)', 
+    teams, 
+    key='main_team_selector', # Give this widget a key
+    on_change=sync_schedule_team # Trigger sync on change
+)
 
 # --- STATE MANAGEMENT FOR EXCLUDED GAMES ---
 if 'excluded_games' not in st.session_state:
@@ -863,4 +870,5 @@ with st.expander("How to read the Passing Grids"):
     **< 100% (Blue):** Lower than league average.
 
     """)
+
 
