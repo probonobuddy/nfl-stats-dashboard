@@ -604,13 +604,18 @@ col1, col2 = st.columns([3, 1])
 
 # --- SCHEDULE COLUMN (RIGHT SIDE) ---
 with col2:
+# ... inside col2 ...
     sched_header_col1, sched_header_col2, sched_header_col3 = st.columns([2, 1, 1])
     
-    default_sched_index = teams.index(selected_team) if selected_team in teams else 0
+    # 1. Ensure the key exists in session state before creating the widget
+    if "schedule_team_selector" not in st.session_state:
+        st.session_state.schedule_team_selector = selected_team
+    
+    # 2. Create the widget WITHOUT the 'index' argument
+    # Streamlit will automatically use the value in st.session_state.schedule_team_selector
     schedule_team = st.selectbox(
         "Schedule Team", 
         teams, 
-        index=default_sched_index, 
         key="schedule_team_selector"
     )
 
@@ -870,5 +875,6 @@ with st.expander("How to read the Passing Grids"):
     **< 100% (Blue):** Lower than league average.
 
     """)
+
 
 
