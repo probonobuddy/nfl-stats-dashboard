@@ -15,28 +15,41 @@ st.set_page_config(layout="wide")
 QB_DATA_URL = r"C:\NFL Data\nflscrapr_games.csv"
 
 # --- 1. DATA LOADING FUNCTIONS ---
+# --- 1. DATA LOADING FUNCTIONS ---
+
+# UPDATED: Direct URL to nflverse games file
+QB_DATA_URL = 'https://github.com/nflverse/nfldata/raw/master/data/games.csv'
+
 @st.cache_data
 def load_data(url):
-    df = pd.read_csv(url)
-    # Ensure numeric columns for matching
-    if 'week' in df.columns:
-        df['week'] = pd.to_numeric(df['week'], errors='coerce')
-    if 'season' in df.columns:
-        df['season'] = pd.to_numeric(df['season'], errors='coerce')
-    return df
+    try:
+        df = pd.read_csv(url)
+        # Ensure numeric columns for matching
+        if 'week' in df.columns:
+            df['week'] = pd.to_numeric(df['week'], errors='coerce')
+        if 'season' in df.columns:
+            df['season'] = pd.to_numeric(df['season'], errors='coerce')
+        return df
+    except Exception as e:
+        st.error(f"Error loading Games data: {e}")
+        return pd.DataFrame()
 
 @st.cache_data
 def load_pbp_data(season):
-    pbp_data_url = rf"C:\NFL Data\pbp_{season}.csv"
+    # UPDATED: nflverse PBP URL (gzip compressed)
+    pbp_data_url = f'https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.csv.gz'
     try:
-        pbp_df = pd.read_csv(pbp_data_url, low_memory=False)
+        # Added compression='gzip' to handle the .gz file
+        pbp_df = pd.read_csv(pbp_data_url, compression='gzip', low_memory=False)
+        
+        # Standardize numeric columns needed for calculations
         cols_to_numeric = ['epa', 'success', 'rush', 'pass', 'week']
         for c in cols_to_numeric:
             if c in pbp_df.columns:
                 pbp_df[c] = pd.to_numeric(pbp_df[c], errors='coerce')
         return pbp_df
-    except FileNotFoundError:
-        st.error(f"Play-by-play data file not found for season {season} at {pbp_data_url}")
+    except Exception as e:
+        st.error(f"Error loading Play-by-play data for season {season}: {e}")
         return None
 
 @st.cache_data
@@ -53,9 +66,9 @@ def get_game_metadata(qb_df, season, week, posteam):
         home_score = row.get('home_score', np.nan)
         away_score = row.get('away_score', np.nan)
         
-        # Get Betting Info (nflscrapr usually has 'spread_line_x' as Away Spread)
-        raw_spread = row.get('spread_line_x', np.nan) 
-        total_val = row.get('total_line_x', np.nan)
+        # MAPPING: Check for 'spread_line' (standard) AND 'spread_line_x' (legacy)
+        raw_spread = row.get('spread_line', row.get('spread_line_x', np.nan))
+        total_val = row.get('total_line', row.get('total_line_x', np.nan))
         
         # Determine Home/Away status and format spread
         if row['home_team'] == posteam:
@@ -848,4 +861,5 @@ with st.expander("How to read the Passing Grids"):
     **100%:** League Average.
     **> 100% (Red):** Higher than league average. (Offense: Targets more often / Defense: Allows more success)
     **< 100% (Blue):** Lower than league average.
+
     """)
