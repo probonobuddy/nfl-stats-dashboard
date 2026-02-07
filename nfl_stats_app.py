@@ -773,9 +773,9 @@ if not latest_stats.empty:
             ax.text(x_max, y_min, 'Good Offense\nBad Defense', ha='right', va='bottom', fontsize=10, color='orange', alpha=0.8, weight='bold')
             ax.text(x_min, y_max, 'Bad Offense\nGood Defense', ha='left', va='top', fontsize=10, color='orange', alpha=0.8, weight='bold')
             ax.text(x_min, y_min, 'Bad Offense\nBad Defense', ha='left', va='bottom', fontsize=10, color='red', alpha=0.8, weight='bold')
-            ax.set_title('Recency Weighted EPA Over Expectation', fontsize=14, fontweight='bold', color='white')
-            ax.set_xlabel('Offense: Weighted EPA OE', fontsize=10, fontweight='bold', color='white')
-            ax.set_ylabel('Defense: Weighted EPA OE (Positive = Good)', fontsize=10, fontweight='bold', color='white')
+            ax.set_title('Opponent Adjusted EPA Over Expectation', fontsize=14, fontweight='bold', color='white')
+            ax.set_xlabel('Offense EPA/Play OE', fontsize=10, fontweight='bold', color='white')
+            ax.set_ylabel('Defense: EPA/Play OE (Positive = Good)', fontsize=10, fontweight='bold', color='white')
             ax.grid(True, linestyle=':', alpha=0.4)
             ax.tick_params(colors='white')
             for spine in ax.spines.values(): spine.set_edgecolor('white')
@@ -863,3 +863,4 @@ with st.expander("How to read the Passing Grids"):
     **< 100% (Blue):** Lower than league average.
 
     """)
+
