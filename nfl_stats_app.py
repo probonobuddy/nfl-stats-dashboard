@@ -870,11 +870,12 @@ with grid_c2:
 
 with st.expander("How to read the Passing Grids"):
     st.write("""
-    **100%:** League Average.
-    **> 100% (Red):** Higher than league average. (Offense: Targets more often / Defense: Allows more success)
-    **< 100% (Blue):** Lower than league average.
-
+    **100%:** League Average.\n
+    **> 100% (Red):** Higher than league average. (Offense: Targets more often / Defense: Allows more success)\n
+    **< 100% (Blue):** Lower than league average.\n
+    Right is the offense's right on both grids.
     """)
+
 
 
 
