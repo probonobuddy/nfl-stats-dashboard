@@ -678,7 +678,7 @@ with col2:
 
     if not sched_table_df.empty:
         with sched_header_col1:
-            st.subheader("Game Schedule")
+            st.subheader("Game Selector")
 
         edited_schedule = st.data_editor(
             sched_table_df,
@@ -875,6 +875,7 @@ with st.expander("How to read the Passing Grids"):
     **< 100% (Blue):** Lower than league average.
 
     """)
+
 
 
 
